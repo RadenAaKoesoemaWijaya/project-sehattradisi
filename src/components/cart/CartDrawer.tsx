@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ShoppingBag, X, Trash2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
@@ -10,6 +10,7 @@ interface CartDrawerProps {
 
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
   const { cart, services, providers, removeFromCart, getCartTotal } = useApp();
+  const navigate = useNavigate();
 
   return (
     <div
@@ -39,7 +40,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             </div>
           ) : (
             <div className="space-y-4">
-              {cart.map((item) => {
+              {cart.map((item: any) => {
                 const service = services.find((s) => s.id === item.serviceId);
                 const provider = item.providerId
                   ? providers.find((p) => p.id === item.providerId)
@@ -94,13 +95,18 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                 Rp{getCartTotal().toLocaleString('id-ID')}
               </span>
             </div>
-            <Link
-              to="/booking/cart"
-              onClick={onClose}
+            <button
               className="btn btn-primary w-full justify-center"
+              onClick={() => {
+                if (cart.length === 0) {
+                  alert('Keranjang Anda kosong!');
+                  return;
+                }
+                navigate('/booking');
+              }}
             >
               Lanjutkan ke Pembayaran
-            </Link>
+            </button>
           </div>
         )}
       </div>

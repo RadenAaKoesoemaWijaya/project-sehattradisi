@@ -193,7 +193,8 @@ const ServicesPage: React.FC = () => {
                     setMinPrice(0);
                     setMaxPrice(500000);
                     setSortBy('default');
-                    navigate('/services');
+                    addToCart({ serviceId: service.id, providerId, date, time, price, quantity: 1 });
+                    navigate(`/booking/${service.id}`);
                   }}
                   className="btn btn-primary"
                 >

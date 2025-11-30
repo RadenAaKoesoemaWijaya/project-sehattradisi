@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
       name: 'Paket Relaksasi Lengkap',
       services: ['service-2', 'service-5'],
       price: 400000,
-      image: 'https://images.pexels.com/photos/8450172/pexels-photo-8450172.jpeg' // Gambar kombinasi pijat dan spa
+      image: 'https://images.pexels.com/photos/3757952/pexels-photo-3757952.jpeg' // Gambar kombinasi pijat dan spa
     },
     {
       name: 'Paket Kesehatan Tradisional',
@@ -54,10 +54,10 @@ const HomePage: React.FC = () => {
         <div className="container-custom relative z-10 py-16 md:py-24">
           <div className="max-w-xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              Kesehatan Tradisional untuk Tubuh dan Jiwa
+              Kesehatan Tradisional untuk Tubuh dan Jiwa Anda
             </h1>
             <p className="text-lg mb-8 opacity-90">
-              Nikmati layanan pijat, spa, dan jamu herbal tradisional langsung ke rumah Anda. Dibuat oleh ahli, untuk kesehatan optimal.
+              Nikmati layanan pijat, spa, dan jamu herbal tradisional dari para penyehat tradisional berpengalaman.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
@@ -83,7 +83,7 @@ const HomePage: React.FC = () => {
                 <p className="text-sm opacity-90">Layanan</p>
               </div>
               <div className="text-center">
-                <div className="font-bold text-2xl">5000+</div>
+                <div className="font-bold text-2xl">500+</div>
                 <p className="text-sm opacity-90">Pelanggan Puas</p>
               </div>
             </div>
@@ -238,7 +238,7 @@ const HomePage: React.FC = () => {
               <div className="card h-full overflow-hidden hover:scale-[1.02] duration-300">
                 <div className="relative h-64">
                   <img
-                    src="https://images.pexels.com/photos/5501130/pexels-photo-5501130.jpeg"
+                    src="https://images.pexels.com/photos/3865676/pexels-photo-3865676.jpeg"
                     alt="Jamu & Herbal"
                     className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                   />
@@ -292,7 +292,7 @@ const HomePage: React.FC = () => {
             <div className="text-center">
               <div className="h-32 w-32 mx-auto mb-6 rounded-lg overflow-hidden">
                 <img 
-                  src="https://images.pexels.com/photos/6963944/pexels-photo-6963944.jpeg" 
+                  src="https://images.pexels.com/photos/3865676/pexels-photo-3865676.jpeg" 
                   alt="Pilih Layanan" 
                   className="w-full h-full object-cover"
                 />
@@ -306,7 +306,7 @@ const HomePage: React.FC = () => {
             <div className="text-center">
               <div className="h-32 w-32 mx-auto mb-6 rounded-lg overflow-hidden">
                 <img 
-                  src="https://images.pexels.com/photos/6963831/pexels-photo-6963831.jpeg" 
+                  src="https://images.pexels.com/photos/3865676/pexels-photo-3865676.jpeg" 
                   alt="Jadwalkan Kunjungan" 
                   className="w-full h-full object-cover"
                 />
@@ -320,7 +320,7 @@ const HomePage: React.FC = () => {
             <div className="text-center">
               <div className="h-32 w-32 mx-auto mb-6 rounded-lg overflow-hidden">
                 <img 
-                  src="https://images.pexels.com/photos/3865557/pexels-photo-3865557.jpeg" 
+                  src="https://images.pexels.com/photos/3865676/pexels-photo-3865676.jpeg" 
                   alt="Nikmati Layanan" 
                   className="w-full h-full object-cover"
                 />

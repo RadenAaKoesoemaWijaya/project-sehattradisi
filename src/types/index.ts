@@ -65,3 +65,33 @@ export type CartItemType = {
 };
 
 export type PaymentMethod = 'bank_transfer' | 'e_wallet' | 'cash' | 'qris';
+
+export type OrderType = {
+  orderId: string;
+  serviceId: string;
+  serviceName: string;
+  providerId?: string;
+  providerName?: string;
+  date: string;
+  time: string;
+  address: string;
+  note?: string;
+  paymentMethod: PaymentMethod;
+  total: number;
+  status: 'Menunggu Pembayaran' | 'Lunas' | 'Diproses' | 'Selesai' | 'Dibatalkan';
+  createdAt: string;
+};
+
+export type InvoiceData = {
+  orderId: string;
+  serviceName: string;
+  providerName?: string;
+  date: string;
+  time: string;
+  address: string;
+  note?: string;
+  paymentMethod: string;
+  total: number;
+  status: string;
+  createdAt: string;
+};

@@ -3,20 +3,27 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, Clock, CheckCircle, ShoppingBag } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../hooks/useToast';
 import ServiceCard from '../components/services/ServiceCard';
 import { recommendationService } from '../services/recommendationService';
+import { validateDate, validateTime } from '../utils/validation';
+import Button from '../components/common/Button';
+import { v4 as uuidv4 } from 'uuid';
 
 const ServiceDetailPage: React.FC = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const { services, providers, addToCart, isLoggedIn } = useApp();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showSuccess, showError, showWarning } = useToast();
   
   const service = services.find((s) => s.id === serviceId);
   
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedProvider, setSelectedProvider] = useState('');
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
     if (user && service) {
@@ -32,19 +39,62 @@ const ServiceDetailPage: React.FC = () => {
     .filter((s) => s.category === service?.category && s.id !== service?.id)
     .slice(0, 3);
   
-  const handleBookNow = () => {
+  const handleBookNow = async () => {
     if (!isLoggedIn) {
+      showWarning('Silakan login terlebih dahulu');
       navigate('/account');
       return;
     }
-    
-    if (!selectedProvider || !selectedDate || !selectedTime) {
-      alert('Silakan pilih terapis, tanggal, dan waktu terlebih dahulu');
+
+    if (!service) {
+      showError('Layanan tidak ditemukan');
       return;
     }
+
+    // Validasi untuk layanan non-herbal
+    if (service.category !== 'herbal') {
+      const validationErrors: { [key: string]: string } = {};
+      
+      if (!selectedProvider) {
+        validationErrors.provider = 'Silakan pilih terapis';
+      }
+      
+      const dateValidation = validateDate(selectedDate);
+      if (!dateValidation.isValid) {
+        validationErrors.date = dateValidation.error!;
+      }
+      
+      const timeValidation = validateTime(selectedTime);
+      if (!timeValidation.isValid) {
+        validationErrors.time = timeValidation.error!;
+      }
+      
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
+    }
+
+    setIsLoading(true);
     
-    addToCart(serviceId || '', selectedProvider, selectedDate, selectedTime);
-    navigate(`/booking/${serviceId}`);
+    try {
+      addToCart({
+        id: uuidv4(),
+        serviceId: service.id,
+        providerId: selectedProvider,
+        date: selectedDate,
+        time: selectedTime,
+        price: service.price,
+        quantity: 1,
+      });
+      
+      showSuccess('Layanan ditambahkan ke keranjang!');
+      navigate('/booking');
+    } catch (error) {
+      showError('Gagal menambahkan ke keranjang. Silakan coba lagi.');
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   if (!service) {
@@ -154,9 +204,14 @@ const ServiceDetailPage: React.FC = () => {
                         className={`p-3 rounded-md border text-left transition-colors ${
                           selectedProvider === provider.id
                             ? 'border-primary-700 bg-primary-50'
+                            : errors.provider
+                            ? 'border-red-300 hover:border-red-400'
                             : 'border-gray-200 hover:border-primary-300'
                         }`}
-                        onClick={() => setSelectedProvider(provider.id)}
+                        onClick={() => {
+                          setSelectedProvider(provider.id);
+                          if (errors.provider) setErrors(prev => ({ ...prev, provider: '' }));
+                        }}
                       >
                         <div className="flex items-center">
                           <img
@@ -175,6 +230,9 @@ const ServiceDetailPage: React.FC = () => {
                       </button>
                     ))}
                   </div>
+                  {errors.provider && (
+                    <p className="mb-4 text-sm text-red-600">{errors.provider}</p>
+                  )}
                   
                   <h3 className="font-semibold mb-3">Pilih Tanggal:</h3>
                   <div className="grid grid-cols-3 sm:grid-cols-7 gap-2 mb-4">
@@ -184,14 +242,22 @@ const ServiceDetailPage: React.FC = () => {
                         className={`p-2 rounded-md border text-center text-sm transition-colors ${
                           selectedDate === date.value
                             ? 'border-primary-700 bg-primary-50'
+                            : errors.date
+                            ? 'border-red-300 hover:border-red-400'
                             : 'border-gray-200 hover:border-primary-300'
                         }`}
-                        onClick={() => setSelectedDate(date.value)}
+                        onClick={() => {
+                          setSelectedDate(date.value);
+                          if (errors.date) setErrors(prev => ({ ...prev, date: '' }));
+                        }}
                       >
                         {date.label}
                       </button>
                     ))}
                   </div>
+                  {errors.date && (
+                    <p className="mb-4 text-sm text-red-600">{errors.date}</p>
+                  )}
                   
                   <h3 className="font-semibold mb-3">Pilih Waktu:</h3>
                   <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -201,24 +267,34 @@ const ServiceDetailPage: React.FC = () => {
                         className={`p-2 rounded-md border text-center text-sm transition-colors ${
                           selectedTime === time.value
                             ? 'border-primary-700 bg-primary-50'
+                            : errors.time
+                            ? 'border-red-300 hover:border-red-400'
                             : 'border-gray-200 hover:border-primary-300'
                         }`}
-                        onClick={() => setSelectedTime(time.value)}
+                        onClick={() => {
+                          setSelectedTime(time.value);
+                          if (errors.time) setErrors(prev => ({ ...prev, time: '' }));
+                        }}
                       >
                         {time.label}
                       </button>
                     ))}
                   </div>
+                  {errors.time && (
+                    <p className="mt-4 text-sm text-red-600">{errors.time}</p>
+                  )}
                 </div>
               )}
               
-              <button
+              <Button
                 onClick={handleBookNow}
-                className="btn btn-primary py-3 px-6 w-full flex items-center justify-center gap-2"
+                loading={isLoading}
+                loadingText="Memproses..."
+                className="py-3 px-6 w-full"
               >
                 <ShoppingBag size={20} />
                 {service.category === 'herbal' ? 'Beli Sekarang' : 'Pesan Sekarang'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

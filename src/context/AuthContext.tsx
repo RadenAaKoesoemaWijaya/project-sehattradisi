@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode } from 'react';
 import { useApp } from './AppContext';
 
 interface User {
@@ -14,13 +14,17 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { isLoggedIn } = useApp();
-  
+  const { isLoggedIn, isLoading } = useApp();
+
   // Mock user data based on isLoggedIn state
   const user: User | null = isLoggedIn ? {
     uid: 'mock-user-id',
     email: 'user@example.com'
   } : null;
+
+  // Non-blocking auth check
+  // The app will render immediately, and components can check isLoading or isAuthenticated
+  // to show appropriate UI states (e.g., skeletons or redirect)
 
   const value = {
     user,
